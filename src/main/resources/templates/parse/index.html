@@ -4,8 +4,10 @@
 <head th:include="common/head">
 </head>
 <script src="js/load-min.js"></script>
-<link href="https://cdn.bootcss.com/jquery-modal/0.8.2/jquery.modal.css" rel="stylesheet">
-<script src="https://cdn.bootcss.com/jquery-modal/0.8.2/jquery.modal.min.js"></script>
+<link href="https://cdn.bootcss.com/jquery-modal/0.8.2/jquery.modal.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.bootcss.com/jquery-modal/0.8.2/jquery.modal.min.js"></script>
 <body>
 	<style>
 .mask {
@@ -23,11 +25,13 @@
 	-webkit-justify-content: center;
 	justify-content: center;
 }
+
 .mdl-layout__drawer-button {
-  /* This background is dark, so we set text to white. Use 87% black instead if
+	/* This background is dark, so we set text to white. Use 87% black instead if
      your background is light. */
-  color: white;
+	color: white;
 }
+
 .mask>div {
 	border: 1px solid #D0D0D0;
 	font-size: 12px;
@@ -45,12 +49,14 @@
 	position: fixed;
 	overflow-y: hidden
 }
-.display-3{
-	color:white
+
+.display-3 {
+	color: white
 }
+
 #url {
 	width: 300;
-	color:white;
+	color: white;
 }
 
 .mdl-layout__content {
@@ -59,8 +65,8 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-size:cover;
-	background-color:#000000;
+	background-size: cover;
+	background-color: #000000;
 	background-position: center;
 }
 
@@ -92,31 +98,30 @@
 	display: flex;
 }
 
-
-
 .otherlist {
 	width: 160px;
-
-}
-#videoDiv{
-padding:5px;
-z-index:1000;
-}
-.modal{
-width:100%;
-max-width:100%;
 }
 
+#videoDiv {
+	padding: 5px;
+	z-index: 1000;
+}
+
+.modal {
+	width: 100%;
+	max-width: 100%;
+}
 </style>
 	<div class="mdl-layout mdl-js-layout">
 		<header class="mdl-layout__header">
 			<div class="mdl-layout__header-row">
 				<!-- Title -->
-				<span class="mdl-layout-title"><i class="material-icons" style="color: rgb(255, 255, 255);">video_library</i></span>
+				<span class="mdl-layout-title"><i class="material-icons"
+					style="color: rgb(255, 255, 255);">video_library</i></span>
 				<!-- Add spacer, to align navigation to the right -->
 				<div class="mdl-layout-spacer"></div>
 				<!-- Navigation. We hide it in small screens. -->
-				<nav class="mdl-navigation mdl-layout--large-screen-only" >
+				<nav class="mdl-navigation mdl-layout--large-screen-only">
 					<a class="mdl-navigation__link" href="">Link</a> <a
 						class="mdl-navigation__link" href="">Link</a> <a
 						class="mdl-navigation__link" href="">Link</a> <a
@@ -145,6 +150,10 @@ max-width:100%;
 			<div id="videoCon" class="linkList"></div>
 		</div>
 		</main>
+		<div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
+			<div class="mdl-snackbar__text"></div>
+			<button class="mdl-snackbar__action" type="button"></button>
+		</div>
 	</div>
 	<script type="text/javascript">
 		var streamArray = new Array();
@@ -196,6 +205,9 @@ max-width:100%;
 							+'.html\')">'+json.data.videos.list[i].title+'</button></div>');
 				}
 				$.mask_close('body');
+				var snackbarContainer = document.querySelector('#demo-toast-example');
+				var data = {message: '加载成功 '};
+			    snackbarContainer.MaterialSnackbar.showSnackbar(data);
 				//$("#myvideo").attr("src", videoUrl);
 			});
 
