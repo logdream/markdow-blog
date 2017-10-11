@@ -6,8 +6,10 @@ import java.util.Random;
 
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -26,9 +28,14 @@ public class HttpUtils {
 		for (String key : appendHead.keySet()) {
 			httpGet.addHeader(key, appendHead.get(key));
 		}
-		// RequestConfig config = RequestConfig.DEFAULT;
-		// config.se
+		 HttpHost proxy = new HttpHost("secure.uku.im", 8443, "https");
+
+         RequestConfig config = RequestConfig.custom()
+                 .setProxy(proxy)
+                 .build();
+         httpGet.setConfig(config);
 		CloseableHttpClient httpclient = HttpClients.createDefault();
+		
 		try {
 			CloseableHttpResponse response1 = httpclient.execute(httpGet);
 			HttpEntity entity = response1.getEntity();
