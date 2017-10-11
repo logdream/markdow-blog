@@ -41,9 +41,10 @@ public class YoukuParse {
 	
 	public String getJson(){
 		Map<String, String> appendHeader = new HashMap<>();
-		appendHeader.put("Referer", "http://v.youku.com/v_show/id_"+getVideoId()+".html");
+		String videoId = getVideoId();
+		appendHeader.put("Referer", "http://v.youku.com/v_show/id_"+videoId+".html");
 		appendHeader.put("host", "ups.youku.com");
-		String result = HttpUtils.getRequest(infoUrl+getVideoId()+"&client_ts="+(System.currentTimeMillis()/1000),appendHeader);
+		String result = HttpUtils.getRequest(infoUrl+videoId+"&client_ts="+(System.currentTimeMillis()/1000),appendHeader);
 		return result;
 	}
 	

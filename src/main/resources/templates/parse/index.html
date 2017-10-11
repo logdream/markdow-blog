@@ -52,6 +52,7 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	background-size:cover;
 }
 
 .page-content {
@@ -61,7 +62,6 @@
 	align-items: center;
 	flex-direction: column;
 	justify-content: space-around;
-	height: 600px;
 }
 
 .baseicFlex {
@@ -179,8 +179,9 @@ max-width:100%;
 				$("#linkList").children().remove();
 				$("#videoCon").children().remove();
 				$("#videoInfo").children().remove();
-				
-				$("#videoInfo").append("<p>"+ json.data.show.title +"</p>")
+				console.log(json);
+				if(json.data.show.title)
+					$("#videoInfo").append("<p>"+ json.data.show.title +"</p>")
 				setBg(json.data.show);
 				
 				for(let i in json.data.stream){
