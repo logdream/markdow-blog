@@ -168,6 +168,7 @@ max-width:100%;
 			$.mask_element('body');
 			localStorage.lasturl = dd.url;
 			$.post("/parse", dd, function(data) {
+				console.log(data);
 				var json = JSON.parse(data);
 				if(!json.data||json.data.length<1){
 					alert(json.e);
@@ -176,8 +177,8 @@ max-width:100%;
 				$("#linkList").children().remove();
 				$("#videoCon").children().remove();
 				$("#videoInfo").children().remove();
-				if(json.data.show.title)
-					$("#videoInfo").append("<h4 class='display-3'>"+ json.data.show.title +"</h4>")
+				if(json.data.video.title)
+					$("#videoInfo").append("<h4 class='display-3'>"+ json.data.video.title +"</h4>")
 				setBg(json.data.show);
 				
 				for(let i in json.data.stream){
