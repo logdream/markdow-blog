@@ -11,7 +11,7 @@ public class YoukuParse {
 
 	private String link;
 	
-	private final static String infoUrl = "https://ups.youku.com/ups/get.json?&ccode=0501&client_ip=0.0.0.0&utid=SR0FEVRbDSICAXEufXSyjJqv&vid=";
+	private final static String infoUrl = "https://ups.youku.com/ups/get.json?&ccode=0502&client_ip=0.0.0.0&utid=SR0FEVRbDSICAXEufXSyjJqv&vid=";
 	
 	
 	private final static String IDREPX1 = "id_(.*?==)";

@@ -23,7 +23,11 @@
 	-webkit-justify-content: center;
 	justify-content: center;
 }
-
+.mdl-layout__drawer-button {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: white;
+}
 .mask>div {
 	border: 1px solid #D0D0D0;
 	font-size: 12px;
@@ -41,9 +45,12 @@
 	position: fixed;
 	overflow-y: hidden
 }
-
+.display-3{
+	color:white
+}
 #url {
 	width: 300;
+	color:white;
 }
 
 .mdl-layout__content {
@@ -53,6 +60,7 @@
 	justify-content: center;
 	align-items: center;
 	background-size:cover;
+	background-color:#000000;
 }
 
 .page-content {
@@ -83,19 +91,11 @@
 	display: flex;
 }
 
-.linkList {
-	display: -webkit-flex; /* Safari */
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-around;
-	align-items: baseline;
-	align-content: center;
-}
+
 
 .otherlist {
-	width: 120px;
-	padding-top: 10px;
-	padding-left:10px;
+	width: 160px;
+
 }
 #videoDiv{
 padding:5px;
@@ -111,11 +111,11 @@ max-width:100%;
 		<header class="mdl-layout__header">
 			<div class="mdl-layout__header-row">
 				<!-- Title -->
-				<span class="mdl-layout-title">Title</span>
+				<span class="mdl-layout-title"><i class="material-icons" style="color: rgb(255, 255, 255);">video_library</i></span>
 				<!-- Add spacer, to align navigation to the right -->
 				<div class="mdl-layout-spacer"></div>
 				<!-- Navigation. We hide it in small screens. -->
-				<nav class="mdl-navigation mdl-layout--large-screen-only">
+				<nav class="mdl-navigation mdl-layout--large-screen-only" >
 					<a class="mdl-navigation__link" href="">Link</a> <a
 						class="mdl-navigation__link" href="">Link</a> <a
 						class="mdl-navigation__link" href="">Link</a> <a
@@ -124,23 +124,15 @@ max-width:100%;
 			</div>
 		</header>
 		<div class="mdl-layout__drawer">
-			<span class="mdl-layout-title">Title</span>
-			<nav class="mdl-navigation">
-				<a class="mdl-navigation__link" href="">Link</a> <a
-					class="mdl-navigation__link" href="">Link</a> <a
-					class="mdl-navigation__link" href="">Link</a> <a
-					class="mdl-navigation__link" href="">Link</a>
-			</nav>
+			<span class="mdl-layout-title" id="linkList">相关</span>
 		</div>
 		<main class="mdl-layout__content">
 		<div class="page-content">
-
-
 			<div class="baseicFlex">
 				<div class="mdl-textfield mdl-js-textfield">
 					<label class="mdl-textfield__label" for="sample1">url</label> <input
 						class="mdl-textfield__input" name="urlfodf" size="300" type="text"
-						value="http://v.youku.com/v_show/id_XMzA3NDA1NjgxMg==.html?spm=a2hcm.20010061.contentHolderUnit3.A"
+						value="http://v.youku.com/v_show/id_XMzA2NDU0MTMyNA==.html"
 						id="url">
 
 				</div>
@@ -150,7 +142,6 @@ max-width:100%;
 			</div>
 			<div id="videoInfo" class="linkList"></div>
 			<div id="videoCon" class="linkList"></div>
-			<div id="linkList" class="linkList"></div>
 		</div>
 		</main>
 	</div>
@@ -174,26 +165,26 @@ max-width:100%;
 			}
 			dd.type = "youku";
 			$.mask_element('body');
+			localStorage.lasturl = dd.url;
 			$.post("/parse", dd, function(data) {
 				var json = JSON.parse(data);
 				$("#linkList").children().remove();
 				$("#videoCon").children().remove();
 				$("#videoInfo").children().remove();
-				console.log(json);
 				if(json.data.show.title)
-					$("#videoInfo").append("<p>"+ json.data.show.title +"</p>")
+					$("#videoInfo").append("<h4 class='display-3'>"+ json.data.show.title +"</h4>")
 				setBg(json.data.show);
 				
 				for(let i in json.data.stream){
 					streamArray[i] = (json.data.stream[i]);
-					$("#videoCon").append('<div class="otherlist"><button class="mdl-button mdl-js-button mdl-button--raised " onclick="showVideo('
+					$("#videoCon").append('<div class="otherlist"><button class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised " onclick="showVideo('
 							+
 							i
 							+')">'+json.data.stream[i].stream_type+'</button></div>');
 					
 				}
 				for(let i in json.data.videos.list){
-					$("#linkList").append('<div class="otherlist"><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="getYouku(\'http://v.youku.com/v_show/id_'
+					$("#linkList").append('<div class="otherlist"><button class="mdl-button mdl-js-button mdl-button--accent mdl-button--raised" onclick="getYouku(\'http://v.youku.com/v_show/id_'
 							+
 							json.data.videos.list[i].encodevid
 							+'.html\')">'+json.data.videos.list[i].title+'</button></div>');
@@ -258,7 +249,20 @@ max-width:100%;
 		  
 		        return mua;  
 		    }());  
-	
+	$(function(){
+		/* 单击选择网址输入框 */
+        $("#url").click(
+            function() {
+                $(this).select();
+            }
+        );
+		let lastUrl = localStorage.lasturl;
+		if(lastUrl){
+			$("#url").val(lastUrl);
+			getYouku(lastUrl);
+		}
+		
+	});
 	</script>
 </body>
 </html>
