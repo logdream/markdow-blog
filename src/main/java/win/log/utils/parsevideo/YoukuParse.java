@@ -26,8 +26,9 @@ public class YoukuParse {
 		Matcher matcher = r.matcher(this.link);
 		String result = null;
 		if(!matcher.find()){
-			 r = Pattern.compile(IDREPX2);
-			 matcher = r.matcher(this.link);
+			Pattern r2 = Pattern.compile(IDREPX2);
+			 matcher = r2.matcher(this.link);
+			 matcher.find();
 		}
 		
 		if(matcher.groupCount()>0)
@@ -42,12 +43,22 @@ public class YoukuParse {
 	public String getJson(){
 		Map<String, String> appendHeader = new HashMap<>();
 		String videoId = getVideoId();
+		if(null==videoId)
+			return "{e:'不能处理此地址'}";
 		appendHeader.put("Referer", "http://v.youku.com/v_show/id_"+videoId+".html");
 		appendHeader.put("host", "ups.youku.com");
 		String result = HttpUtils.getRequest(infoUrl+videoId+"&client_ts="+(System.currentTimeMillis()/1000),appendHeader);
 		return result;
 	}
 	
-	
+	public static void main(){
+		String arg = "http://v.youku.com/v_show/id_XMzE2ODg0MDAw.html?spm=a2h0j.8191423.listitem_page1.5~5~5~3~A";
+		Pattern r2 = Pattern.compile(IDREPX2);
+		Matcher matcher = r2.matcher(arg);
+		matcher.find();
+		for(int i=0;i<matcher.groupCount();i++){
+			System.out.println(matcher.group(i));
+		}
+	}
 	
 }

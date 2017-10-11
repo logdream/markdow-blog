@@ -168,6 +168,10 @@ max-width:100%;
 			localStorage.lasturl = dd.url;
 			$.post("/parse", dd, function(data) {
 				var json = JSON.parse(data);
+				if(!json.data||json.data.length<1){
+					alert(json.e);
+					return false;
+				}
 				$("#linkList").children().remove();
 				$("#videoCon").children().remove();
 				$("#videoInfo").children().remove();
