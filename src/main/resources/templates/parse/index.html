@@ -61,6 +61,7 @@
 	align-items: center;
 	background-size:cover;
 	background-color:#000000;
+	background-position: center;
 }
 
 .page-content {
@@ -207,7 +208,9 @@ max-width:100%;
 			
 			$("body").append(videoHtml);
 			 $("#videoDiv").modal({clickClose: false, closeText: 'x',width:'600dp'});
-			
+			 $('#videoDiv').on($.modal.BEFORE_CLOSE, function(event, modal) {
+				 $("#myVideo").remove();
+				});
 			
 		}
 		function setBg(showObj){
