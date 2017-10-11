@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/head">
+</head>
+<body>
+	<!-- Uses a header that contracts as the page scrolls down. -->
+	<style>
+.demo-layout-waterfall .mdl-layout__header-row .mdl-navigation__link:last-of-type
+	{
+	padding-right: 0;
+}
+</style>
+
+	<div class="demo-layout-waterfall mdl-layout mdl-js-layout">
+		<header class="mdl-layout__header mdl-layout__header--waterfall">
+			<!-- Top row, always visible -->
+			<div class="mdl-layout__header-row">
+				<!-- Title -->
+				<span class="mdl-layout-title">Title</span>
+				<div class="mdl-layout-spacer"></div>
+
+			</div>
+			<!-- Bottom row, not visible on scroll -->
+			<div class="mdl-layout__header-row">
+				<div class="mdl-layout-spacer"></div>
+				<!-- Navigation -->
+				<nav class="mdl-navigation">
+					<a class="mdl-navigation__link" href="">Link</a> <a
+						class="mdl-navigation__link" href="">Link</a> <a
+						class="mdl-navigation__link" href="">Link</a> <a
+						class="mdl-navigation__link" href="">Link</a>
+				</nav>
+			</div>
+		</header>
+		<div class="mdl-layout__drawer">
+			<span class="mdl-layout-title">Title</span>
+			<nav class="mdl-navigation">
+				<a class="mdl-navigation__link" href="">Link</a> <a
+					class="mdl-navigation__link" href="">Link</a> <a
+					class="mdl-navigation__link" href="">Link</a> <a
+					class="mdl-navigation__link" href="">Link</a>
+			</nav>
+		</div>
+		<main class="mdl-layout__content">
+		<div class="page-content">
+			<div>
+				<form method="post" th:action="@{/web/saveAll}" id="form">
+					<table width="100%"
+						class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+
+						<thead>
+							<tr>
+								<th class="mdl-data-table__cell--non-numeric">名称</th>
+								<th>EN Name</th>
+								<th>地址</th>
+								
+								<th>开始时间</th>
+								<th>图标</th>
+								<th>可用</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="model:${lists}">
+								<td class="mdl-data-table__cell--non-numeric">
+								<input
+									type="hidden" class="mdl-textfield__input" name="id"
+									size="9" th:value="${model.id}" />
+								<input
+									type="text" class="mdl-textfield__input" name="shortName"
+									size="9" th:value="${model.shortName}" /></td>
+									<td class="mdl-data-table__cell--non-numeric"><input
+									type="text" class="mdl-textfield__input" name="enName"
+									size="9" th:value="${model.enName}" /></td>
+								<td><input class="mdl-textfield__input" type="text"
+									name="url" size="25" th:value="${model.url}" /></td>
+								<td><input class="mdl-textfield__input" type="text" 
+									name="beginDate" th:value="${#temporals.format(model.beginDate,'yyyy-MM-dd')}" /></td>
+								<td><input class="mdl-textfield__input" type="text"
+									name="iconUrl" th:value="${model.iconUrl}" /></td>
+								<td><input class="mdl-textfield__input" type="text"
+									size="2" name="used" th:value="${model.used}" /></td>
+							</tr>
+							<tr id="trInput">
+								<td class="mdl-data-table__cell">
+								<input type="hidden" name="id"/>
+								<input
+									type="text" class="mdl-textfield__input" name="shortName"
+									size="9" /></td>
+									<td class="mdl-data-table__cell"><input
+									type="text" class="mdl-textfield__input" name="enName"
+									size="9" /></td>
+								<td><input class="mdl-textfield__input" type="text"
+									name="url" size="25" /></td>
+								<td><input class="mdl-textfield__input" type="text"
+									name="beginDate" /></td>
+								<td><input class="mdl-textfield__input" type="text"
+									name="iconUrl" /></td>
+								<td><input class="mdl-textfield__input" type="text"
+									size="2" name="used" /></td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+				<div class="mdl-grid">
+					<div class="mdl-cell mdl-cell--4-col"></div>
+					<div class="mdl-cell mdl-cell--6-col"></div>
+					<div class="mdl-cell mdl-cell--2-col">
+						<!-- Colored raised button -->
+						<button onclick="addNewOne()"
+							class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+							<i class="material-icons">add</i> 新增
+						</button>
+						<!-- Accent-colored raised button -->
+
+						<button onclick="saveAll()"
+							class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+							<i class="material-icons">done</i>保存
+						</button>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+	<script type="text/javascript">
+		function addNewOne() {
+			var html = "<tr>" + $("#trInput").html() + "</tr>";
+			$("#trInput").after(html);
+		}
+		function saveAll(){
+			$("#form").submit();
+		}
+	</script>
+</body>
+</html>

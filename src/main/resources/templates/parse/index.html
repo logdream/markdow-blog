@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/head">
+</head>
+<script src="js/load-min.js"></script>
+<link href="https://cdn.bootcss.com/jquery-modal/0.8.2/jquery.modal.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/jquery-modal/0.8.2/jquery.modal.min.js"></script>
+<body>
+	<style>
+.mask {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(242, 242, 242, 0.5);
+	position: fixed;
+	left: 0;
+	top: 0;
+	text-align: center;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.mask>div {
+	border: 1px solid #D0D0D0;
+	font-size: 12px;
+	padding: 5px 15px;
+	max-width: 150px;
+	color: #494A5F;
+	background: url(loading.gif) no-repeat 5px 5px;
+	padding-left: 25px;
+	background-color: #FFFFFF;
+	word-wrap: break-word;
+	margin: 0 auto;
+}
+
+.scroll-off {
+	position: fixed;
+	overflow-y: hidden
+}
+
+#url {
+	width: 300;
+}
+
+.mdl-layout__content {
+	display: -webkit-flex; /* Safari */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.page-content {
+	display: -webkit-flex; /* Safari */
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	flex-direction: column;
+	justify-content: space-around;
+	height: 600px;
+}
+
+.baseicFlex {
+	display: -webkit-flex; /* Safari */
+	display: flex;
+}
+
+.result-content {
+	display: -webkit-flex; /* Safari */
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: space-around;
+	flex-wrap: warp;
+	align-content: center;
+}
+
+#videoCon {
+	display: flex;
+}
+
+.linkList {
+	display: -webkit-flex; /* Safari */
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: baseline;
+	align-content: center;
+}
+
+.otherlist {
+	width: 120px;
+	padding-top: 10px;
+	padding-left:10px;
+}
+#videoDiv{
+padding:5px;
+z-index:1000;
+}
+.modal{
+width:100%;
+max-width:100%;
+}
+
+</style>
+	<div class="mdl-layout mdl-js-layout">
+		<header class="mdl-layout__header">
+			<div class="mdl-layout__header-row">
+				<!-- Title -->
+				<span class="mdl-layout-title">Title</span>
+				<!-- Add spacer, to align navigation to the right -->
+				<div class="mdl-layout-spacer"></div>
+				<!-- Navigation. We hide it in small screens. -->
+				<nav class="mdl-navigation mdl-layout--large-screen-only">
+					<a class="mdl-navigation__link" href="">Link</a> <a
+						class="mdl-navigation__link" href="">Link</a> <a
+						class="mdl-navigation__link" href="">Link</a> <a
+						class="mdl-navigation__link" href="">Link</a>
+				</nav>
+			</div>
+		</header>
+		<div class="mdl-layout__drawer">
+			<span class="mdl-layout-title">Title</span>
+			<nav class="mdl-navigation">
+				<a class="mdl-navigation__link" href="">Link</a> <a
+					class="mdl-navigation__link" href="">Link</a> <a
+					class="mdl-navigation__link" href="">Link</a> <a
+					class="mdl-navigation__link" href="">Link</a>
+			</nav>
+		</div>
+		<main class="mdl-layout__content">
+		<div class="page-content">
+
+
+			<div class="baseicFlex">
+				<div class="mdl-textfield mdl-js-textfield">
+					<label class="mdl-textfield__label" for="sample1">url</label> <input
+						class="mdl-textfield__input" name="urlfodf" size="300" type="text"
+						value="http://v.youku.com/v_show/id_XMzA3NDA1NjgxMg==.html?spm=a2hcm.20010061.contentHolderUnit3.A"
+						id="url">
+
+				</div>
+				<button onclick="getYouku()"
+					class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+					go</button>
+			</div>
+			<div id="videoInfo" class="linkList"></div>
+			<div id="videoCon" class="linkList"></div>
+			<div id="linkList" class="linkList"></div>
+		</div>
+		</main>
+	</div>
+	<script type="text/javascript">
+		var streamArray = new Array();
+		function testABP() {
+			var inst = ABP.create(document.getElementById('load-player'), {
+				'src' : document.getElementById('new-video'),
+				'width' : 800,
+				'height' : 522
+			});
+		}
+
+		function getYouku(url) {
+			$(".result-content").show();
+			var dd = {};
+			dd.url = url||$("#url").val();
+			if(!dd.url||dd.url.indexOf("youku")<0){
+				alert("请输入正确的链接")
+				return false;
+			}
+			dd.type = "youku";
+			$.mask_element('body');
+			$.post("/parse", dd, function(data) {
+				var json = JSON.parse(data);
+				$("#linkList").children().remove();
+				$("#videoCon").children().remove();
+				$("#videoInfo").children().remove();
+				
+				$("#videoInfo").append("<p>"+ json.data.show.title +"</p>")
+				setBg(json.data.show);
+				
+				for(let i in json.data.stream){
+					streamArray[i] = (json.data.stream[i]);
+					$("#videoCon").append('<div class="otherlist"><button class="mdl-button mdl-js-button mdl-button--raised " onclick="showVideo('
+							+
+							i
+							+')">'+json.data.stream[i].stream_type+'</button></div>');
+					
+				}
+				for(let i in json.data.videos.list){
+					$("#linkList").append('<div class="otherlist"><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" onclick="getYouku(\'http://v.youku.com/v_show/id_'
+							+
+							json.data.videos.list[i].encodevid
+							+'.html\')">'+json.data.videos.list[i].title+'</button></div>');
+				}
+				$.mask_close('body');
+				//$("#myvideo").attr("src", videoUrl);
+			});
+
+		}
+		function showVideo(i){
+			$("#videoDiv").remove();
+			var videoHtml = '<div id="videoDiv"><video width="100%" id="myVideo"  src="'
+			+
+				streamArray[i].m3u8_url +
+				'" preload="auto" autoplay="" controls="" class="embed-responsive-item"></video><div>';
+			
+			$("body").append(videoHtml);
+			 $("#videoDiv").modal({clickClose: false, closeText: 'x',width:'600dp'});
+			
+			
+		}
+		function setBg(showObj){
+			var backgroudUrl = "";
+			if (MobileUA.SMART_PHONE){
+				if(showObj.show_vthumburl_huge ){
+					backgroudUrl = showObj.show_vthumburl_huge ;
+				}
+			}
+			else{
+				if(showObj.show_thumburl_huge){
+					
+					backgroudUrl = showObj.show_thumburl_huge;
+				}
+			}
+			if(!backgroudUrl){
+				backgroudUrl = showObj.show_thumburl_huge;
+			}
+			$(".mdl-layout__content").css("background-image","url(" + backgroudUrl + ")");
+			
+		}
+	 
+		    var MobileUA = (function() {  
+		        var ua = navigator.userAgent.toLowerCase();  
+		        var mua = {  
+		            IOS: /ipod|iphone|ipad/.test(ua), //iOS  
+		            IPHONE: /iphone/.test(ua), //iPhone  
+		            IPAD: /ipad/.test(ua), //iPad  
+		            ANDROID: /android/.test(ua), //Android Device  
+		            WINDOWS: /windows/.test(ua), //Windows Device  
+		            TOUCH_DEVICE: ('ontouchstart' in window) || /touch/.test(ua), //Touch Device  
+		            MOBILE: /mobile/.test(ua), //Mobile Device (iPad)  
+		            ANDROID_TABLET: false, //Android Tablet  
+		            WINDOWS_TABLET: false, //Windows Tablet  
+		            TABLET: false, //Tablet (iPad, Android, Windows)  
+		            SMART_PHONE: false //Smart Phone (iPhone, Android)  
+		        };  
+		  
+		        mua.ANDROID_TABLET = mua.ANDROID && !mua.MOBILE;  
+		        mua.WINDOWS_TABLET = mua.WINDOWS && /tablet/.test(ua);  
+		        mua.TABLET = mua.IPAD || mua.ANDROID_TABLET || mua.WINDOWS_TABLET;  
+		        mua.SMART_PHONE = mua.MOBILE && !mua.TABLET;  
+		  
+		        return mua;  
+		    }());  
+	
+	</script>
+</body>
+</html>
