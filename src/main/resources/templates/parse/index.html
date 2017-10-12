@@ -29,7 +29,7 @@
 .mdl-layout__drawer-button {
 	/* This background is dark, so we set text to white. Use 87% black instead if
      your background is light. */
-	color: white;
+	color: 87% black;
 }
 
 .mask>div {
@@ -50,12 +50,31 @@
 	overflow-y: hidden
 }
 
+::-moz-selection {
+	background-color: #6ab344;
+	color: #fff;
+}
+
+::selection {
+	background-color: #6ab344;
+	color: #fff;
+}
+
+.android-search-box .mdl-textfield__input {
+	color: white;
+}
+
+.android-header .mdl-menu__container {
+	z-index: 50;
+	margin: 0 !important;
+}
+
 .display-3 {
 	color: white
 }
 
 #url {
-	width: 300;
+	width: 300px;
 	color: white;
 }
 
@@ -63,7 +82,7 @@
 	display: -webkit-flex; /* Safari */
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: start;
 	align-items: center;
 	background-size: cover;
 	background-color: #000000;
@@ -76,6 +95,7 @@
 	justify-content: flex-end;
 	align-items: center;
 	flex-direction: column;
+	flex-wrap:wrap;
 	justify-content: space-around;
 }
 
@@ -96,15 +116,21 @@
 
 #videoCon {
 	display: flex;
+	flex-wrap: wrap;
 }
-
+.linkList{
+	display: flex;
+	
+}
 .otherlist {
 	width: 160px;
+	margin:10px;
 }
 
 #videoDiv {
-	padding: 5px;
+	width: 90% padding: 5px;
 	z-index: 1000;
+	margin: 10px
 }
 
 .modal {
@@ -112,29 +138,36 @@
 	max-width: 100%;
 }
 </style>
-	<div class="mdl-layout mdl-js-layout">
+	<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 		<header class="mdl-layout__header">
 			<div class="mdl-layout__header-row">
-				<!-- Title -->
-				<span class="mdl-layout-title"><i class="material-icons"
-					style="color: rgb(255, 255, 255);">video_library</i></span>
-				<!-- Add spacer, to align navigation to the right -->
 				<div class="mdl-layout-spacer"></div>
-				<!-- Navigation. We hide it in small screens. -->
-				<nav class="mdl-navigation mdl-layout--large-screen-only">
-					<a class="mdl-navigation__link" href="">Link</a> <a
-						class="mdl-navigation__link" href="">Link</a> <a
-						class="mdl-navigation__link" href="">Link</a> <a
-						class="mdl-navigation__link" href="">Link</a>
-				</nav>
+				<div id="searchBar"
+					class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                  mdl-textfield--floating-label mdl-textfield--align-right">
+					<label class="mdl-button mdl-js-button mdl-button--icon"
+						for="fixed-header-drawer-exp"> <i class="material-icons"
+						onclick="gotoGet()">search</i>
+					</label>
+					<div class="mdl-textfield__expandable-holder android-search-box">
+						<input class="mdl-textfield__input" type="text" name="sample"
+							id="url">
+					</div>
+				</div>
 			</div>
 		</header>
+
 		<div class="mdl-layout__drawer">
 			<span class="mdl-layout-title" id="linkList">相关</span>
 		</div>
 		<main class="mdl-layout__content">
+		<div id="videoDiv" draggable="true">
+			<video width="100%" id="myVideo" src="" preload="auto" autoplay=""
+				controls="" class="embed-responsive-item" draggable="true">
+			</video>
+		</div>
 		<div class="page-content">
-			<div class="baseicFlex">
+			<!-- <div class="baseicFlex">
 				<div class="mdl-textfield mdl-js-textfield">
 					<label class="mdl-textfield__label" for="sample1">url</label> <input
 						class="mdl-textfield__input" name="urlfodf" size="300" type="text"
@@ -145,10 +178,14 @@
 				<button onclick="getYouku()"
 					class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
 					go</button>
-			</div>
+			</div> -->
 			<div id="videoInfo" class="linkList"></div>
 			<div id="videoCon" class="linkList"></div>
 		</div>
+		<!-- Colored mini FAB button -->
+<button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" id="toggle-btn">
+  <i class="material-icons">add</i>
+</button>
 		</main>
 		<div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
 			<div class="mdl-snackbar__text"></div>
@@ -157,13 +194,10 @@
 	</div>
 	<script type="text/javascript">
 		var streamArray = new Array();
-		function testABP() {
-			var inst = ABP.create(document.getElementById('load-player'), {
-				'src' : document.getElementById('new-video'),
-				'width' : 800,
-				'height' : 522
-			});
-		}
+		var nowShow = null;
+		var changeBg = true;
+		var t = null;
+		
 
 		function getYouku(url) {
 			$(".result-content").show();
@@ -174,8 +208,10 @@
 				return false;
 			}
 			dd.type = "youku";
-			$.mask_element('body');
+			if(changeBg)
+				$.mask_element('body');
 			localStorage.lasturl = dd.url;
+			$("#url").val(dd.url);
 			$.post("/parse", dd, function(data) {
 				console.log(data);
 				var json = JSON.parse(data);
@@ -188,7 +224,6 @@
 				$("#videoInfo").children().remove();
 				if(json.data.video.title)
 					$("#videoInfo").append("<h4 class='display-3'>"+ json.data.video.title +"</h4>")
-				setBg(json.data.show);
 				
 				for(let i in json.data.stream){
 					streamArray[i] = (json.data.stream[i]);
@@ -204,27 +239,34 @@
 							json.data.videos.list[i].encodevid
 							+'.html\')">'+json.data.videos.list[i].title+'</button></div>');
 				}
+			if(changeBg){
 				$.mask_close('body');
+				setBg(json.data.show);
 				var snackbarContainer = document.querySelector('#demo-toast-example');
 				var data = {message: '加载成功 '};
 			    snackbarContainer.MaterialSnackbar.showSnackbar(data);
 				//$("#myvideo").attr("src", videoUrl);
+				}
 			});
 
 		}
 		function showVideo(i){
-			$("#videoDiv").remove();
-			var videoHtml = '<div id="videoDiv"><video width="100%" id="myVideo"  src="'
-			+
-				streamArray[i].m3u8_url +
-				'" preload="auto" autoplay="" controls="" class="embed-responsive-item"></video><div>';
+			nowShow = i;
+			$("#myVideo").attr('src',streamArray[i].m3u8_url);
 			
-			$("body").append(videoHtml);
-			 $("#videoDiv").modal({clickClose: false, closeText: 'x',width:'600dp'});
-			 $('#videoDiv').on($.modal.BEFORE_CLOSE, function(event, modal) {
-				 $("#myVideo").remove();
-				});
+			//绑定定时事件，4分钟重写调用接口，防止服务器禁止
+			if(t){ //如果有先取消
+				window.clearInterval(t);
+			}
+			t = setInterval("reRequestVideo()", 240000);
+		}
+		function gotoGet(){
 			
+			if($("#url").val()){
+				changeBg = true;
+				getYouku();
+			}
+			console.log($("#searchBar").attr("class"));
 		}
 		function setBg(showObj){
 			var backgroudUrl = "";
@@ -276,13 +318,39 @@
                 $(this).select();
             }
         );
+      //回车事件
+        $(document).keydown(function(event){
+            if(event.keyCode == "13"){
+            	getYouku();
+            }
+        });
+
 		let lastUrl = localStorage.lasturl;
 		if(lastUrl){
 			$("#url").val(lastUrl);
 			getYouku(lastUrl);
 		}
-		
+		function toggleVideo(e){  
+	        //当前播放时间  
+	        var curTime=e.currentTime;  
+	        e.currentTime = e.currentTime+100;
+	        console.log(curTime);
+	      }  
+	  
+	      $('#toggle-btn').click(function(){  
+	        toggleVideo(myVideo);  
+	      })  
 	});
+	function reRequestVideo(){
+		changeBg = false;
+		getYouku();
+		console.log("i am running");
+		var videoObje = document.getElementById("myVideo");
+		current = videoObje.currentTime;
+		$("#myVideo").attr('src',streamArray[nowShow].m3u8_url);
+		videoObje.currentTime = current;
+	}
+	
 	</script>
 </body>
 </html>

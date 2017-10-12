@@ -32,7 +32,7 @@ public class HttpUtils {
 		InetAddress address;
 		boolean isIpReachable = false;
 		try {
-			address = InetAddress.getByName("www.uku.im");
+			address = InetAddress.getByName("secure.uku.im");
 			isIpReachable = address.isReachable(1500);
 		} catch (Exception e) {
 			// TODO: handle exception
