@@ -95,7 +95,7 @@
 	justify-content: flex-end;
 	align-items: center;
 	flex-direction: column;
-	flex-wrap:wrap;
+	flex-wrap: wrap;
 	justify-content: space-around;
 }
 
@@ -117,14 +117,19 @@
 #videoCon {
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: center;
 }
-.linkList{
+
+.linkList {
 	display: flex;
-	
+}
+.linkList2{
+display: flex;
+width: 300px;
+justify-content: space-around;
 }
 .otherlist {
-	width: 160px;
-	margin:10px;
+	margin: 10px;
 }
 
 #videoDiv {
@@ -162,30 +167,36 @@
 		</div>
 		<main class="mdl-layout__content">
 		<div id="videoDiv" draggable="true">
-			<video width="100%" id="myVideo" src="" preload="auto" autoplay=""
-				controls="" class="embed-responsive-item" draggable="true">
+			<video width="100%" id="myVideo" src="" preload="auto"
+				autoplay="autoplay" controls="" class="embed-responsive-item"
+				draggable="true">
 			</video>
 		</div>
 		<div class="page-content">
-			<!-- <div class="baseicFlex">
-				<div class="mdl-textfield mdl-js-textfield">
-					<label class="mdl-textfield__label" for="sample1">url</label> <input
-						class="mdl-textfield__input" name="urlfodf" size="300" type="text"
-						value="http://v.youku.com/v_show/id_XMzE2ODg0MDAw.html?spm=a2h0j.8191423.listitem_page1.5~5~5~3~A"
-						id="url">
 
-				</div>
-				<button onclick="getYouku()"
-					class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-					go</button>
-			</div> -->
 			<div id="videoInfo" class="linkList"></div>
 			<div id="videoCon" class="linkList"></div>
+			<!-- Colored mini FAB button -->
+		<div class="linkList2">
+		<button
+			class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+			id="toggle-btn">
+			<i class="material-icons">restore</i>
+		</button>
+		<button
+			class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored"
+			id="forward_30">
+			<i class="material-icons">forward_30</i>
+		</button>
+		
+		<button
+			class="mdl-button mdl-js-button mdl-button--fab  mdl-button--colored"
+			id="toggle-next">
+			<i class="material-icons">skip_next</i>
+		</button>
 		</div>
-		<!-- Colored mini FAB button -->
-<button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored" id="toggle-btn">
-  <i class="material-icons">add</i>
-</button>
+		</div>
+		
 		</main>
 		<div id="demo-toast-example" class="mdl-js-snackbar mdl-snackbar">
 			<div class="mdl-snackbar__text"></div>
@@ -224,13 +235,18 @@
 				$("#videoInfo").children().remove();
 				if(json.data.video.title)
 					$("#videoInfo").append("<h4 class='display-3'>"+ json.data.video.title +"</h4>")
-				
+				if(json.data.videos.next){
+					addNextUrl(json.data.videos.next.encodevid);
+				}
+				else{
+					addNextUrl("");
+				}
 				for(let i in json.data.stream){
 					streamArray[i] = (json.data.stream[i]);
-					$("#videoCon").append('<div class="otherlist"><button class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised " onclick="showVideo('
+					$("#videoCon").append('<div class="otherlist"><button class="mdl-button mdl-js-button  mdl-button--raised showVideoBtn" onclick="showVideo('
 							+
 							i
-							+')">'+json.data.stream[i].stream_type+'</button></div>');
+							+',this)">'+json.data.stream[i].stream_type+'</button></div>');
 					
 				}
 				for(let i in json.data.videos.list){
@@ -247,10 +263,11 @@
 			    snackbarContainer.MaterialSnackbar.showSnackbar(data);
 				//$("#myvideo").attr("src", videoUrl);
 				}
+			$(".showVideoBtn:first").trigger('click');
 			});
 
 		}
-		function showVideo(i){
+		function showVideo(i,my){
 			nowShow = i;
 			$("#myVideo").attr('src',streamArray[i].m3u8_url);
 			
@@ -258,6 +275,8 @@
 			if(t){ //如果有先取消
 				window.clearInterval(t);
 			}
+			$(".showVideoBtn").removeClass('mdl-button--colored');
+			$(my).addClass("mdl-button--colored");
 			t = setInterval("reRequestVideo()", 160000);
 		}
 		function gotoGet(){
@@ -310,7 +329,8 @@
 		        mua.SMART_PHONE = mua.MOBILE && !mua.TABLET;  
 		  
 		        return mua;  
-		    }());  
+		    }());
+		    var current =null;
 	$(function(){
 		/* 单击选择网址输入框 */
         $("#url").click(
@@ -332,25 +352,53 @@
 		}
 		function toggleVideo(e){  
 	        //当前播放时间  
+	        if(current)
 	        var curTime=e.currentTime;  
-	        e.currentTime = e.currentTime+100;
-	        console.log(curTime);
+	        e.currentTime = current;
 	      }  
 	  
 	      $('#toggle-btn').click(function(){  
 	        toggleVideo(myVideo);  
-	      })  
+	      }) ;
+	      $("#toggle-next").click(function(){
+	    	  gotonext();
+	      });
+	      $("#forward_30").click(function(){
+	    	  var videoObje = document.getElementById("myVideo");
+	    	  videoObje.currentTime = videoObje.currentTime+30;
+	      });
 	});
+	
 	function reRequestVideo(){
 		changeBg = false;
 		getYouku();
-		console.log("i am running");
 		var videoObje = document.getElementById("myVideo");
-		current = videoObje.currentTime;
+		 current = videoObje.currentTime;
 		$("#myVideo").attr('src',streamArray[nowShow].m3u8_url);
-		videoObje.currentTime = current;
+		videoObje.onplay = function(t){
+			//svideoObje.currentTime = current;
+			//videoObje.currentTime = current;
+			setTimeout("$('#toggle-btn').trigger('click')",1000);
+		};
+		
 	}
-	
+	function showMsg(msg){
+		var snackbarContainer = document.querySelector('#demo-toast-example');
+		var data = {message: msg};
+	    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+	}
+	function addNextUrl(encodeVid){
+		if(encodeVid){
+			$("#toggle-next").attr('data-op',encodeVid);
+		}
+	}
+	function gotonext(){
+		var vid =$("#toggle-next").attr('data-op');
+		if(vid){
+			var url = 'http://v.youku.com/v_show/id_'+vid+"==.html";
+			getYouku(url);
+		}
+	}
 	</script>
 </body>
 </html>
