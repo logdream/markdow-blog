@@ -143,7 +143,7 @@ justify-content: space-around;
 	max-width: 100%;
 }
 </style>
-	<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+	<div class="mdl-layout mdl-js-layout">
 		<header class="mdl-layout__header">
 			<div class="mdl-layout__header-row">
 				<div class="mdl-layout-spacer"></div>
@@ -193,6 +193,11 @@ justify-content: space-around;
 			class="mdl-button mdl-js-button mdl-button--fab  mdl-button--colored"
 			id="toggle-next">
 			<i class="material-icons">skip_next</i>
+		</button>
+		<button
+			class="mdl-button mdl-js-button mdl-button--fab  mdl-button--colored"
+			id="toggle-bigger">
+			<i class="material-icons">add</i>
 		</button>
 		</div>
 		</div>
@@ -262,8 +267,9 @@ justify-content: space-around;
 				var data = {message: '加载成功 '};
 			    snackbarContainer.MaterialSnackbar.showSnackbar(data);
 				//$("#myvideo").attr("src", videoUrl);
+			    $(".showVideoBtn:first").trigger('click');
 				}
-			$(".showVideoBtn:first").trigger('click');
+			
 			});
 
 		}
@@ -367,6 +373,14 @@ justify-content: space-around;
 	    	  var videoObje = document.getElementById("myVideo");
 	    	  videoObje.currentTime = videoObje.currentTime+30;
 	      });
+	      $("#toggle-bigger").click(function(){
+	    	  console.log(11);
+	    	  let videoObj = document.getElementById("myVideo");
+	    	  let videoRealWith = videoObj.attr('videoWidth');
+	    	  console.log(videoRealWith);
+	    	  videoObje.attr('width',videoRealWith);
+	    	  
+	      });
 	});
 	
 	function reRequestVideo(){
@@ -378,7 +392,7 @@ justify-content: space-around;
 		videoObje.onplay = function(t){
 			//svideoObje.currentTime = current;
 			//videoObje.currentTime = current;
-			setTimeout("$('#toggle-btn').trigger('click')",1000);
+			setTimeout("$('#toggle-btn').trigger('click')",2000);
 		};
 		
 	}
@@ -397,6 +411,7 @@ justify-content: space-around;
 		if(vid){
 			var url = 'http://v.youku.com/v_show/id_'+vid+"==.html";
 			getYouku(url);
+			current = 0.0;
 		}
 	}
 	</script>

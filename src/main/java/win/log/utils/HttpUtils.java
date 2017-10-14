@@ -43,6 +43,13 @@ public class HttpUtils {
 			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
 			httpGet.setConfig(config);
 		}
+		else{
+			
+			/*HttpHost proxy = new HttpHost("218.56.132.156", 8080, "http");
+
+			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+			httpGet.setConfig(config);*/
+		}
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		try {
