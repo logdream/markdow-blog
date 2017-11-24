@@ -42,12 +42,12 @@ public class ModuleController {
 	}
 	@PostMapping("/addAdmin")
 	@ApiOperation("增加用户")
-	public Result<String> addUser(String ModuleId,String uid){
+	public Result<String> addUser(String moduleId,String uid){
 		return null;
 	}
-	@PostMapping("/removeUser")
+	@PostMapping("/removeAdmin")
 	@ApiOperation("移除用户")
-	public Result<String> deleteUser(String ModuleId,String uid){
+	public Result<String> deleteUser(String moduleId,String uid){
 		return null;
 	}
 }

@@ -45,7 +45,7 @@ public class RoleController {
 	public Result<String> addUser(String roleId,String uid){
 		return null;
 	}
-	@PostMapping("/removeUser")
+	@PostMapping("/removeAdmin")
 	@ApiOperation("移除用户")
 	public Result<String> deleteUser(String roleId,String uid){
 		return null;
